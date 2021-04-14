@@ -1,23 +1,60 @@
-import logo from './logo.svg';
+import {useState} from 'react';
+import { FaFilter, FaRegCheckSquare, FaRegSquare } from 'react-icons/fa'
 import './App.css';
 
 function App() {
+
+  const[list, setList] = useState([]);
+
+  function onSubmit(e) {
+    e.preventDefault()
+    console.log(e.target.task.value);
+    const task = {
+      id: new Date(),
+      name: e.target.task.value,
+      status: "pendente"
+    };
+    setList([...list, task])
+  }
+  
+  function done(item) {
+    const newList = list.map((t) => {
+      if (t.id === item.id) {
+        if (t.status === "feito") {
+          t.status = "pendente";
+        } else {
+          t.status = "feito";
+        }
+      }
+      return t;
+    })
+
+    setList(newList);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={onSubmit}>
+        <input name="task" />
+        <button type="submit">Adicionar</button>
+      </form>
+      <button> Não concluída </button>
+      <ul>
+      {list.map((item, index) => {
+        // fazer filtro de "não concluídas"
+        // editar a tarefa
+        return (
+          <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
+          <span>{ item.name }</span>
+          <button onClick={() => done(item)}>
+            {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
+          </button>
+          </li>
+        );
+
+      })}
+      </ul>
+      
     </div>
   );
 }
