@@ -24,3 +24,8 @@ ul > li button {
   background: transparent;
   cursor: pointer;
 }
+
+.filter {
+  float: right;
+  margin: 10px;
+}
