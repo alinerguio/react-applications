@@ -5,7 +5,7 @@ import './App.css';
 function App() {
 
   const[list, setList] = useState([]);
-  const[filter, setFilter] = useState(true);
+  const[filter, setFilter] = useState(false);
 
   function onSubmit(e) {
     e.preventDefault()
@@ -32,15 +32,12 @@ function App() {
     setList(newList);
   }
 
-  function editTask(item, newName) {
-    // const newName = e.target.newTask.value;
-    const newList = list.map((t) => {
-      if (t.id === item.id) {
-        t.name = newName;
-      }
-      return t;
-    })
+  function editTask(e, id) {
+    const newList = list.map(l => l.id === id ? {
+      ...l, name: e
+    } : l);
 
+    console.log(newList);
     setList(newList);
   }
 
@@ -50,14 +47,15 @@ function App() {
         <input name="task" />
         <button type="submit">Adicionar</button>
       </form>
-      <button onClick={ () => setFilter(!filter) }> Não concluída </button>
+      <button onClick={ () => setFilter(!filter) }> Filtrar </button>
       <ul>
       {list.map((item, index) => {
         if (!filter) {
           console.log(list);
           return (
             <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-            <span contentEditable={true} onInput={(e) => editTask(item, e.currentTarget.textContent)}>{ item.name }</span>
+            <input style={{ border: "none" }} type="text" onChange={(e) => editTask(e.target.value, item.id)}   value={item.name}/>
+            
             <button onClick={() => done(item)}>
               {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
             </button>
@@ -69,12 +67,14 @@ function App() {
           if (item.status === "pendente") {
             return (
               <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-              <span contentEditable={true} onInput={(e) => editTask(item, e.currentTarget.textContent)}>{ item.name }</span>
+              <input style={{ border: "none" }} type="text" onChange={(e) => editTask(e.target.value, item.id)}   value={item.name}/>
+              
               <button onClick={() => done(item)}>
                 {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
               </button>
               </li>
             );
+
           } 
 
           return (null);
