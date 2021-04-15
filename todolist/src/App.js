@@ -1,90 +1,25 @@
-import {useState} from 'react';
-import { FaRegCheckSquare, FaRegSquare } from 'react-icons/fa';
-import './App.css';
+import "./App.css";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import TaskLists from "./pages/TaskLists";
+import Tasks from "./pages/Tasks";
+import { Layout } from "antd";
+import "antd/dist/antd.css";
 
 function App() {
-
-  const[list, setList] = useState([]);
-  const[filter, setFilter] = useState(false);
-
-  function onSubmit(e) {
-    e.preventDefault()
-    const task = {
-      id: new Date(),
-      name: e.target.task.value,
-      status: "pendente"
-    };
-    setList([...list, task]);
-  }
-  
-  function done(item) {
-    const newList = list.map((t) => {
-      if (t.id === item.id) {
-        if (t.status === "feito") {
-          t.status = "pendente";
-        } else {
-          t.status = "feito";
-        }
-      }
-      return t;
-    })
-
-    setList(newList);
-  }
-
-  function editTask(e, id) {
-    const newList = list.map(l => l.id === id ? {
-      ...l, name: e
-    } : l);
-
-    console.log(newList);
-    setList(newList);
-  }
-
   return (
-    <div className="App">
-      <form onSubmit={onSubmit}>
-        <input name="task" />
-        <button type="submit">Adicionar</button>
-      </form>
-      <button onClick={ () => setFilter(!filter) }> Filtrar </button>
-      <ul>
-      {list.map((item, index) => {
-        if (!filter) {
-          console.log(list);
-          return (
-            <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-            <input style={{ border: "none" }} type="text" onChange={(e) => editTask(e.target.value, item.id)}   value={item.name}/>
-            
-            <button onClick={() => done(item)}>
-              {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
-            </button>
-            </li>
-          );
-          
-        } else {
-          console.log(list);
-          if (item.status === "pendente") {
-            return (
-              <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-              <input style={{ border: "none" }} type="text" onChange={(e) => editTask(e.target.value, item.id)}   value={item.name}/>
-              
-              <button onClick={() => done(item)}>
-                {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
-              </button>
-              </li>
-            );
-
-          } 
-
-          return (null);
-
-        }
-
-      })}
-      </ul>
-      
-    </div>
+    <Layout.Content style={{ padding: 20 }}>
+      <Router>
+        <Link to="/">Lista de Tarefas</Link> | <Link to="/list/1">Tarefas</Link>
+        <Switch>
+          <Route exact path="/">
+            <TaskLists />
+          </Route>
+          <Route exact path="/list/:id">
+            <Tasks />
+          </Route>
+        </Switch>
+      </Router>
+    </Layout.Content>
   );
 }
 
