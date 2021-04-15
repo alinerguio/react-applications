@@ -32,8 +32,8 @@ function App() {
     setList(newList);
   }
 
-  function editTask(e, item) {
-    const newName = e.target.newTask.value;
+  function editTask(item, newName) {
+    // const newName = e.target.newTask.value;
     const newList = list.map((t) => {
       if (t.id === item.id) {
         t.name = newName;
@@ -57,10 +57,7 @@ function App() {
           console.log(list);
           return (
             <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-            <form onSubmit={editTask(item)}>
-              <span contentEditable={true} name="taskName">{ item.name }</span>
-              <button type="submit" >editar</button>
-            </form>
+            <span contentEditable={true} onInput={(e) => editTask(item, e.currentTarget.textContent)}>{ item.name }</span>
             <button onClick={() => done(item)}>
               {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
             </button>
@@ -72,13 +69,12 @@ function App() {
           if (item.status === "pendente") {
             return (
               <li style={ item.status === "feito" ? { textDecoration: "line-through" } : {}} key={ index }>
-              <span contentEditable={true} onInput={(e) => editTask(item, e.currentTarget.textContent)} suppressContentEditableWarning={true}>{ item.name }</span>
+              <span contentEditable={true} onInput={(e) => editTask(item, e.currentTarget.textContent)}>{ item.name }</span>
               <button onClick={() => done(item)}>
                 {item.status === "feito" ? <FaRegCheckSquare /> : <FaRegSquare />}
               </button>
               </li>
             );
-
           } 
 
           return (null);
