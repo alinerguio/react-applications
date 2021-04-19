@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaRegCheckSquare, FaRegSquare } from 'react-icons/fa';
 import React from 'react';
+import { useParams } from 'react-router';
 
 const Tasks = () => {
+
+  const params = useParams();
   const[list, setList] = useState([]);
   const[filter, setFilter] = useState(false);
+
+  useEffect(() => {
+    console.log(params)
+  }, [params]);
 
   function onSubmit(e) {
     e.preventDefault()
