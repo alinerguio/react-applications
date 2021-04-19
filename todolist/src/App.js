@@ -9,7 +9,7 @@ function App() {
   return (
     <Layout.Content style={{ padding: 20 }}>
       <Router>
-        <Link to="/">Lista de Tarefas</Link> | <Link to="/list/1">Tarefas</Link>
+        {/* <Link to="/">Lista de Tarefas</Link> | <Link to="/list/1">Tarefas</Link> */}
         <Switch>
           <Route exact path="/">
             <TaskLists />

@@ -9,8 +9,18 @@
       "name": "Comer"
     }
   ],
-  "tasks": {
-    "list_id": 1,
-    "list": []
-  }
+  "tasks": [
+    {
+      "id": "2021-04-19T17:04:34.812Z",
+      "list_id": "2021-04-19T14:58:49.736Z",
+      "name": "teste",
+      "status": "feito"
+    },
+    {
+      "id": "2021-04-19T17:04:38.184Z",
+      "list_id": "2021-04-19T14:58:49.736Z",
+      "name": "aline",
+      "status": "pendente"
+    }
+  ]
 }
