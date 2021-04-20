@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Row, Col, Input, Select } from 'antd';
 import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { useHistory } from 'react-router';
 import axios from 'axios';
 import { endpoint, local_endpoint } from '../common/constants'
 
@@ -10,28 +11,40 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState([]);
 
+    const history = useHistory();
+
     async function getSearch(values) {
         setLoading(true);
         const res = await axios.get(`${endpoint}/search/${values.tipo}?q=${values.valor}`);
         if (res.status === 200) {
-            setSearch((res.data).items);
+            const items = res.data.items;
+      
+            const promises = items.map(item => verifyFavorite(item.html_url));
+
+            const favoriteData = await Promise.all(promises);
+
+            const itemsComplete = items.map(
+                item => ({ ...item, isFavorite: favoriteData.find(fav => fav.url === item.html_url).value })
+            );
+
+            setSearch(itemsComplete);
         }
         setLoading(false);
     }
 
-    async function onFavorite (avatar, login, url) {
+    async function onFavorite (avatar, login, url, values) {
         const id = new Date();
-        await axios.post(`${local_endpoint}/favorites`, { id, url, login, avatar })
+        await axios.post(`${local_endpoint}/favorites`, { id, url, login, avatar });
+        history.push('/favorites');
     } 
 
     async function verifyFavorite(url) {
-        // const [isFavorite, setFavorite] = useState([]);
         const res = await axios.get(`${local_endpoint}/favorites?url=${url}`);
         if (res.data.length === 0) {
-            return false;
-        } 
-        return true;
-    }
+          return {url, value: false};
+        }
+        return {url, value: true};
+      }
 
     return (
     <div>
@@ -76,12 +89,9 @@ const Home = () => {
                 />
                 }
                 actions={[
-                    <button onClick={() => onFavorite(avatar, login, url)} style={{ border: 0, background: 'transparent', cursor: 'pointer' }}>
-                        {/* {verifyFavorite(url) ? console.log(verifyFavorite(url)) : console.log(verifyFavorite(url))} */}
-                        {/* {verifyFavorite(url).then(<HeartFilled />, <HeartOutlined />)} */}
-                        {/* {verifyFavorite(url).then((value) => value ? <HeartFilled /> : <HeartOutlined />)} */}
-                        {await verifyFavorite(url) ? <HeartFilled /> : <HeartOutlined />}
-                    </button>
+                    <div>
+                        {obj.isFavorite ? <HeartFilled style={{ cursor: 'not-allowed' }} /> : <button onClick={() => onFavorite(avatar, login, url)} style={{ border: 0, background: 'transparent', cursor: 'pointer' }}> <HeartOutlined /> </button>}
+                    </div>
                 ]}> 
                 <p>
                     <b>@{login}</b> 
