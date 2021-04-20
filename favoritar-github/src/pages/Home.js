@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { Form, Button, Row, Col, Input, Select } from 'antd';
+import { Card, Form, Button, Row, Col, Input, Select } from 'antd';
+import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import axios from 'axios';
 import { endpoint } from '../common/constants'
+
+const gridStyle = {
+    width: '25%',
+    textAlign: 'center',
+};
 
 const Home = () => {
     const [form] = Form.useForm();
@@ -34,8 +40,8 @@ const Home = () => {
                         // }
                         <Select.Option key={search} value={search}>{search}</Select.Option>
                     ))} */}
-                    <Select.Option key={'code'} value={'code'}>Code</Select.Option>
-                    <Select.Option key={'commit'} value={'commit'}>Commit</Select.Option>
+                    {/* <Select.Option key={'code'} value={'code'}>Code</Select.Option>
+                    <Select.Option key={'commit'} value={'commit'}>Commit</Select.Option> */}
                     <Select.Option key={'issues'} value={'issues'}>Issues</Select.Option>
                     <Select.Option key={'repositories'} value={'repositories'}>Repositories</Select.Option>
                     <Select.Option key={'users'} value={'users'}>Users</Select.Option>
@@ -52,7 +58,32 @@ const Home = () => {
           </Col>
         </Row>   
       </Form>
-      {JSON.stringify(search)}
+      <Row>
+      {Object.keys(search).map((item, index) => {
+          const obj = search[item];
+          return (
+            <Card
+                style={{ width: 200, margin: 10 }}
+                cover={
+                <img
+                    alt="icon"
+                    src={obj.hasOwnProperty('avatar_url') ? obj.avatar_url : obj.hasOwnProperty('user') ? obj.user.avatar_url : obj.owner.avatar_url}
+                />
+                }
+                actions={[
+                <HeartOutlined key="favorite" />
+                ]}> 
+                <p>
+                    <b>@{obj.hasOwnProperty('login') ? obj.login : obj.hasOwnProperty('user') ? obj.user.login : obj.owner.login}</b> 
+                </p>
+                <p>
+                    <a href={obj.html_url} target="blank">See More</a>
+                </p>
+            </Card>
+        );
+      } 
+      )}
+      </Row>
     </div>);
 }
 
