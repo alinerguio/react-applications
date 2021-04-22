@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Row, Select } from "antd";
+import { Button, Col, Form, Input, Row, Select, List } from "antd";
 import Card from '../components/Card';
 import { useState } from "react";
 import axios from "axios";
@@ -9,27 +9,27 @@ const Home = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [listSearch, setListSearch] = useState([]);
-  // const [originalSearch, setOriginalSearch] = useState("");
-  // const [totalCount, setTotalCount] = useState(0); 
+  const [originalSearch, setOriginalSearch] = useState("");
+  const [totalCount, setTotalCount] = useState(0); 
 
   async function getSearch(values, per_page = 30, page = 1) {
       setLoading(true);
       const res = await axios.get(`${endpoint}/search/${values.tipo}?q=${values.valor}&per_page=${per_page}&page=${page}`);
       if (res.status === 200) {
         setListSearch(res.data.items);
-        // setTotalCount(res.data.total_count);
+        setTotalCount(res.data.total_count);
       }
       setLoading(false);
   }
 
   async function onFinish(values) {
     getSearch(values);
-    // setOriginalSearch(values);
+    setOriginalSearch(values);
   }
 
-  // function changePage(page, pageSize) { TODO paginação
-  //   getSearch(originalSearch, pageSize, page);
-  // }
+  function changePage(page, pageSize) { 
+    getSearch(originalSearch, pageSize, page);
+  }
     
     return (
     <div>
@@ -57,11 +57,18 @@ const Home = () => {
           </Col>
         </Row>   
       </Form>
-      <Row loading={loading}>
-      {Object.keys(listSearch).map(key => {
-          return (<Card key={key} obj={listSearch[key]} />);
-      })
-      }
+      <Row>
+        <List 
+            loading={loading}
+            dataSource={listSearch}
+            grid={{ gutter: 16, column: 5 }}
+            pagination={{
+              total: totalCount,
+              pageSize: 30,
+              onChange: changePage,
+            }}
+            renderItem={(item) => <Card obj={item} />}
+         />
       </Row>
     </div>);
 }

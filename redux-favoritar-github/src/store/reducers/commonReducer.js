@@ -1,11 +1,9 @@
-import { COLLAPSED, FAVORITE, REMOVE_FAVORITES } from "../actions/commonActions";
+import { FAVORITE, REMOVE_FAVORITES } from "../actions/commonActions";
 
-const initialState = { collapsed: false, favorites: [] };
+const initialState = { favorites: [] };
 
 function commonRoot(state = initialState, action) {
   switch (action.type) {
-    case COLLAPSED:
-      return { ...state, collapsed: action.collapsed };
     case FAVORITE:
       if (!state.favorites) state.favorites = [];
       const newFavorites = [...state.favorites, action.repository];

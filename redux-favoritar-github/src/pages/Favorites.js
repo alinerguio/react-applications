@@ -15,8 +15,6 @@ const Favorites = () => {
         <center style={{ fontSize: 20 }}> Meus favoritos </center>
         <Row>
             {Object.keys(favorites).map(key => {
-                console.log(favorites)
-                console.log(favorites[key])
                 return (<Card key={key} obj={favorites[key]} />);
             })
             }
